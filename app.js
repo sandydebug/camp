@@ -13,9 +13,9 @@ var seedDB = require("./seed");
 
 
 mongoose.set('useNewUrlParser', true);
-var url = process.env.DATABASEURL;//|| "mongodb://localhost/yelp_camp";
+var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp";
 mongoose.connect(url);
-
+// mongoose.connect("mongodb+srv://saidatta1:saisoham@cluster0-bh2s1.mongodb.net/test?retryWrites=true&w=majority");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine","ejs");
 app.use(express.static(__dirname + "/public"));
