@@ -293,7 +293,4 @@ function checkCommentOwnership(req, res, next){
 		res.redirect("back");
 	}	
 }
-
-app.listen(123, () => {
-    console.log("SERVER IS RUNNING!");
-});
+app.listen(process.env.PORT, process.env.IP);
