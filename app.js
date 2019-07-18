@@ -13,9 +13,9 @@ var seedDB = require("./seed");
 
 
 mongoose.set('useNewUrlParser', true);
-var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp";
-mongoose.connect(url);
-// mongoose.connect("mongodb+srv://saidatta1:saisoham@cluster0-bh2s1.mongodb.net/test?retryWrites=true&w=majority");
+// var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp";
+// mongoose.connect(url);
+mongoose.connect("mongodb+srv://saidatta1:saisoham@cluster0-bh2s1.mongodb.net/test?retryWrites=true&w=majority");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine","ejs");
 app.use(express.static(__dirname + "/public"));
@@ -29,6 +29,7 @@ app.use(require("express-session")({
     resave: false,
     saveUninitialized: false
 }));
+app.locals.moment = require('moment');
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -73,6 +74,7 @@ app.use(function(req, res, next){
 app.get("/",function(req,res){
     res.render("landing");
 });
+
 app.get("/campground",function(req,res){
     Campground.find({},function(err,allcampground){
         if(err){
@@ -104,7 +106,7 @@ app.get("/campground/new",isLoggedIn,function(req, res) {
     res.render("new");
 });
 app.get("/campground/:id",function(req, res) {
-    Campground.findById(req.params.id).populate("comments").exec(function(err, foundcampground){
+    Campground.findById(req.params.id).populate("comments likes").exec(function(err, foundcampground){
         if(err){
             console.log(err);
         }else{
@@ -128,6 +130,36 @@ app.put("/campground/:id", checkCampgroundOwner,  function(req, res){
 			res.redirect("/campground/" + req.params.id);
 		}
 	});
+});
+// Campground Like Route
+app.post("/campground/:id/like",isLoggedIn, function (req, res) {
+		Campground.findById(req.params.id, function (err, foundCampground) {
+		if (err) {
+		console.log(err);
+		return res.redirect("/campground");
+		}
+
+		// check if req.user._id exists in foundCampground.likes
+		var foundUserLike = foundCampground.likes.some(function (like) {
+		return like.equals(req.user._id);
+		});
+
+		if (foundUserLike) {
+		// user already liked, removing like
+		foundCampground.likes.pull(req.user._id);
+		} else {
+		// adding the new user like
+		foundCampground.likes.push(req.user);
+		}
+		foundCampground.save(function (err) {
+		if (err) {
+		console.log(err);
+		return res.redirect("/campground");
+		}
+		return res.redirect("/campground/" + foundCampground._id);
+		
+		});
+		});
 });
 
 
@@ -215,8 +247,8 @@ app.post("/register", function(req, res){
     User.register(new User({username: req.body.username}), req.body.password, function(err, user){
         if(err){
             console.log(err);
-			req.flash("error", err.message);
-            return res.render('register');
+			// req.flash("error", err.message);
+            return res.render("register", {error: err.message});
         }
         passport.authenticate("local")(req, res, function(){
 		 req.flash("success", "Welcome " + user.username); 
@@ -293,4 +325,10 @@ function checkCommentOwnership(req, res, next){
 		res.redirect("back");
 	}	
 }
+
 app.listen(process.env.PORT, process.env.IP);
+
+// app.listen(3000, () => {
+//     console.log("SERVER IS RUNNING!");
+// });
+

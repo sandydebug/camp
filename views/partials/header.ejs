@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
+		<!-- Make site responsive on mobile/tablet -->
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
         <title>MyBam</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="/stylesheets/main.css">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
     </head>
     <body>
 <nav class=" navbar-default navbar-inverse">
@@ -17,7 +21,7 @@
 			 <li><a style = "font-size: 18px" href="/login">Login</a></li>
              <li><a style = "font-size: 18px" href="/register">Sign-up</a></li>
 			<%} else{ %>
-			 <li><a>Signed in as <%= currentuser.username %></a></li>
+			 <li><a style = "font-size: 18px">Signed in as <%= currentuser.username %></a></li>
 			 <li><a style = "font-size: 18px" href="/logout">Log Out</a></li>	
             <% } %>       
         </ul>
