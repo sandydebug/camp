@@ -326,9 +326,9 @@ function checkCommentOwnership(req, res, next){
 	}	
 }
 
-app.listen(process.env.PORT, process.env.IP);
+// app.listen(process.env.PORT, process.env.IP);
 
-// app.listen(3000, () => {
-//     console.log("SERVER IS RUNNING!");
-// });
+app.listen(3000, () => {
+    console.log("SERVER IS RUNNING!");
+});
 
